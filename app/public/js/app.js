@@ -3,6 +3,12 @@ const orderList = document.getElementById("order-list");
 const tableList = document.getElementById("table-list");
 const tableSelect = document.getElementById("table-select");
 const message = document.getElementById("app-message");
+const menuImages = {
+    "pho bo": "/images/pho-bo.jpg",
+    "bun cha": "/images/bun-cha.jpg",
+    "com ga": "/images/com-ga.jpg",
+    "nuoc cam": "/images/nuoc-cam.jpg"
+};
 
 async function apiRequest(path, options = {}) {
     const response = await fetch(`/api/${path}`, {
@@ -28,6 +34,21 @@ function renderMenu(items) {
     items.forEach(item => {
         const card = document.createElement("article");
         card.className = "menu-item";
+
+        const imageSource = menuImages[item.name
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()];
+        if (imageSource) {
+            card.classList.add("menu-item-with-photo");
+            const image = document.createElement("img");
+            image.className = "menu-photo";
+            image.src = imageSource;
+            image.alt = item.name;
+            image.loading = "lazy";
+            image.decoding = "async";
+            card.append(image);
+        }
 
         const name = document.createElement("h3");
         name.textContent = item.name;

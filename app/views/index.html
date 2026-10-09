@@ -1,69 +1,176 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý nhà hàng - Order</title>
+    <meta name="theme-color" content="#f6f4ed">
+    <meta name="description" content="Hệ thống quản lý thực đơn, bàn ăn và đơn hàng nhà hàng.">
+    <title>Nhà hàng Order | Quản lý vận hành</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <header class="header">
-        <h1>NHÀ HÀNG ORDER</h1>
-        <p>Hệ thống quản lý nhà hàng</p>
+    <header class="topbar">
+        <a class="brand" href="#dashboard" aria-label="Nhà hàng Order - Trang tổng quan">
+            <span class="brand-mark" aria-hidden="true">
+                <svg class="brand-symbol" viewBox="0 0 48 48" fill="none" focusable="false">
+                    <path d="M16 17c-3-3 3-4 0-8M25 15c-3-3 3-4 0-8M34 17c-3-3 3-4 0-8" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+                    <path d="M10 22h28l-3 12a5 5 0 0 1-5 4H18a5 5 0 0 1-5-4l-3-12Z" fill="#f5eee0" stroke="#f5eee0" stroke-linejoin="round"/>
+                    <path d="M8 21h32M18 42h12" stroke="#f1bc82" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span class="brand-copy">
+                <strong>NHÀ HÀNG ORDER</strong>
+                <span>MÓN NGON · PHỤC VỤ TẬN TÂM</span>
+            </span>
+        </a>
+
+        <nav class="navbar" aria-label="Điều hướng chính">
+            <a class="nav-link active" href="#dashboard">Tổng quan</a>
+            <a class="nav-link" href="#menu">Thực đơn</a>
+            <a class="nav-link" href="#orders">Đơn hàng</a>
+            <a class="nav-link" href="#tables">Bàn ăn</a>
+        </nav>
+
+        <div class="topbar-note">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span>Đang hoạt động</span>
+        </div>
     </header>
 
-    <nav class="navbar">
-        <a href="#dashboard">Tổng quan</a>
-        <a href="#menu">Thực đơn</a>
-        <a href="#orders">Đơn hàng</a>
-        <a href="#tables">Bàn ăn</a>
-    </nav>
-
-    <main class="container" id="dashboard">
-        <h2>Tổng quan hệ thống</h2>
-
-        <section class="statistics">
-            <div class="stat-card">
-                <h3 id="menu-count">0</h3>
-                <p>Món ăn</p>
+    <main class="page-shell" id="dashboard">
+        <section class="welcome-card" aria-labelledby="welcome-title">
+            <div class="welcome-copy">
+                <h1 id="welcome-title">Món ngon mỗi ngày,<br>phục vụ tận tâm<span>.</span></h1>
+                <p class="welcome-description">
+                    Chọn món yêu thích, sắp bàn cho khách và theo dõi đơn hàng trong một nơi.
+                </p>
+                <a class="welcome-action" href="#menu">
+                    Xem thực đơn <span aria-hidden="true">↗</span>
+                </a>
             </div>
-            <div class="stat-card">
-                <h3 id="order-count">0</h3>
-                <p>Đơn hàng</p>
+            <div class="welcome-art" aria-hidden="true">
+                <span class="art-spark spark-one">✦</span>
+                <span class="art-spark spark-two">✳</span>
+                <div class="plate plate-outer">
+                    <div class="plate plate-inner">
+                        <svg class="hero-bowl-art" viewBox="0 0 180 140" fill="none" focusable="false">
+                            <path d="M65 36c-9-10 10-12 2-24M91 31c-9-10 10-12 2-24M117 36c-9-10 10-12 2-24" stroke="#678063" stroke-width="5" stroke-linecap="round"/>
+                            <path d="M30 60c0 37 24 62 60 62s60-25 60-62H30Z" fill="#fffaf0" stroke="#c9835d" stroke-width="7" stroke-linejoin="round"/>
+                            <path d="M23 58h134" stroke="#c9835d" stroke-width="8" stroke-linecap="round"/>
+                            <path d="M49 73c10 8 18 8 28 0s18-8 28 0 18 8 28 0" stroke="#d8a46a" stroke-width="5" stroke-linecap="round"/>
+                            <circle cx="67" cy="87" r="7" fill="#75916b"/>
+                            <circle cx="108" cy="91" r="8" fill="#d98158"/>
+                            <circle cx="87" cy="102" r="5" fill="#e8c788"/>
+                            <path d="M70 77c5 9 11 13 18 14M111 76c-2 7-1 12 4 18" stroke="#678063" stroke-width="3" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                </div>
+                <span class="art-caption">Tươi ngon mỗi ngày</span>
             </div>
-            <div class="stat-card">
-                <h3 id="table-count">0</h3>
-                <p>Bàn ăn</p>
+            <span class="welcome-decoration" aria-hidden="true"></span>
+        </section>
+
+        <section class="overview-section" aria-labelledby="overview-title">
+            <div class="section-heading overview-heading">
+                <div>
+                    <p class="eyebrow">TỔNG QUAN NHÀ HÀNG</p>
+                    <h2 id="overview-title">Mọi thứ trong tầm mắt</h2>
+                </div>
+                <p class="today-label"><span aria-hidden="true">◷</span> Dữ liệu cập nhật trực tiếp</p>
+            </div>
+
+            <div class="statistics">
+                <article class="stat-card">
+                    <div class="stat-topline">
+                        <span class="stat-icon icon-menu" aria-hidden="true">✳</span>
+                        <span class="stat-caption">ĐANG PHỤC VỤ</span>
+                    </div>
+                    <p class="stat-value" id="menu-count">—</p>
+                    <p class="stat-label">Món ăn trong thực đơn</p>
+                    <span class="stat-accent accent-menu" aria-hidden="true"></span>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-topline">
+                        <span class="stat-icon icon-order" aria-hidden="true">↗</span>
+                        <span class="stat-caption">ĐÃ GHI NHẬN</span>
+                    </div>
+                    <p class="stat-value" id="order-count">—</p>
+                    <p class="stat-label">Đơn hàng của nhà hàng</p>
+                    <span class="stat-accent accent-order" aria-hidden="true"></span>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-topline">
+                        <span class="stat-icon icon-table" aria-hidden="true">⌘</span>
+                        <span class="stat-caption">SẴN SÀNG ĐÓN KHÁCH</span>
+                    </div>
+                    <p class="stat-value" id="table-count">—</p>
+                    <p class="stat-label">Bàn ăn trong nhà hàng</p>
+                    <span class="stat-accent accent-table" aria-hidden="true"></span>
+                </article>
             </div>
         </section>
 
-        <section id="menu">
-            <h2>Thực đơn</h2>
+        <section class="content-section" id="menu" aria-labelledby="menu-title">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">BẾP ĐANG CÓ GÌ?</p>
+                    <h2 id="menu-title">Thực đơn hôm nay</h2>
+                    <p class="section-description">Chọn một món để lên đơn nhanh cho khách.</p>
+                </div>
+                <span class="section-count">MÓN NGON MỖI NGÀY</span>
+            </div>
+
             <div class="order-controls">
-                <label for="table-select">Chọn bàn (không bắt buộc):</label>
+                <label for="table-select">Phục vụ tại bàn</label>
                 <select id="table-select">
                     <option value="">Không gắn với bàn</option>
                 </select>
-                <p id="app-message" role="status" aria-live="polite"></p>
+                <span class="table-hint">Chỉ hiển thị những bàn đang trống</span>
             </div>
-            <div id="menu-list" class="menu-list"></div>
+
+            <p id="app-message" class="app-message" role="status" aria-live="polite"></p>
+            <div id="menu-list" class="menu-list" aria-live="polite"></div>
         </section>
 
-        <section id="orders">
-            <h2>Đơn hàng</h2>
-            <div id="order-list"></div>
-        </section>
+        <div class="lower-grid">
+            <section class="panel-section" id="orders" aria-labelledby="orders-title">
+                <div class="section-heading compact-heading">
+                    <div>
+                        <p class="eyebrow">BẾP ĐÃ NHẬN</p>
+                        <h2 id="orders-title">Đơn hàng gần đây</h2>
+                    </div>
+                    <span class="small-count">MỚI NHẤT</span>
+                </div>
+                <div id="order-list" class="order-list"></div>
+            </section>
 
-        <section id="tables">
-            <h2>Trạng thái bàn ăn</h2>
-            <div id="table-list" class="table-list"></div>
-        </section>
+            <section class="panel-section" id="tables" aria-labelledby="tables-title">
+                <div class="section-heading compact-heading">
+                    <div>
+                        <p class="eyebrow">SƠ ĐỒ PHỤC VỤ</p>
+                        <h2 id="tables-title">Trạng thái bàn</h2>
+                    </div>
+                    <span class="table-legend"><span></span> Còn trống</span>
+                </div>
+                <div id="table-list" class="table-list"></div>
+            </section>
+        </div>
+
+        <footer class="page-footer">
+            <a class="footer-brand" href="#dashboard">
+                <span class="footer-brand-mark" aria-hidden="true">
+                    <svg class="brand-symbol" viewBox="0 0 48 48" fill="none" focusable="false">
+                        <path d="M16 17c-3-3 3-4 0-8M25 15c-3-3 3-4 0-8M34 17c-3-3 3-4 0-8" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+                        <path d="M10 22h28l-3 12a5 5 0 0 1-5 4H18a5 5 0 0 1-5-4l-3-12Z" fill="#f5eee0" stroke="#f5eee0" stroke-linejoin="round"/>
+                        <path d="M8 21h32M18 42h12" stroke="#f1bc82" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                Nhà hàng Order
+            </a>
+            <p>Món ngon mỗi ngày, phục vụ bằng sự tận tâm.</p>
+            <a class="back-to-top" href="#dashboard">Lên đầu trang ↑</a>
+        </footer>
     </main>
-
-    <footer>
-        <p>Hệ thống quản lý nhà hàng/order</p>
-    </footer>
 
     <script src="/js/app.js"></script>
 </body>
