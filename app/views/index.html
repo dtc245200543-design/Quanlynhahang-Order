@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý nhà hàng - Order</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <h1>NHÀ HÀNG ORDER</h1>
+        <p>Hệ thống quản lý nhà hàng</p>
+    </header>
+
+    <nav class="navbar">
+        <a href="#dashboard">Tổng quan</a>
+        <a href="#menu">Thực đơn</a>
+        <a href="#orders">Đơn hàng</a>
+        <a href="#tables">Bàn ăn</a>
+    </nav>
+
+    <main class="container" id="dashboard">
+        <h2>Tổng quan hệ thống</h2>
+
+        <section class="statistics">
+            <div class="stat-card">
+                <h3 id="menu-count">0</h3>
+                <p>Món ăn</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="order-count">0</h3>
+                <p>Đơn hàng</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="table-count">0</h3>
+                <p>Bàn ăn</p>
+            </div>
+        </section>
+
+        <section id="menu">
+            <h2>Thực đơn</h2>
+            <div class="order-controls">
+                <label for="table-select">Chọn bàn (không bắt buộc):</label>
+                <select id="table-select">
+                    <option value="">Không gắn với bàn</option>
+                </select>
+                <p id="app-message" role="status" aria-live="polite"></p>
+            </div>
+            <div id="menu-list" class="menu-list"></div>
+        </section>
+
+        <section id="orders">
+            <h2>Đơn hàng</h2>
+            <div id="order-list"></div>
+        </section>
+
+        <section id="tables">
+            <h2>Trạng thái bàn ăn</h2>
+            <div id="table-list" class="table-list"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Hệ thống quản lý nhà hàng/order</p>
+    </footer>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
