@@ -73,10 +73,11 @@ Các port trên chỉ bind vào loopback để tránh công khai giao diện qu�
 
 ## Demo ứng dụng và database
 
-1. Mở website, kiểm tra thực đơn, trạng thái bàn và đơn hàng được tải từ PostgreSQL qua các API `/api/menu`, `/api/tables`, `/api/orders`.
-2. Chọn một bàn đang trống (hoặc “Không gắn với bàn”), nhấn **Tạo đơn hàng** trên một món. Đơn mới phải hiện trong danh sách và số liệu tổng quan; khi chọn bàn, trạng thái bàn chuyển sang “Đang phục vụ”.
-3. Mở pgAdmin, đăng nhập bằng `PGADMIN_DEFAULT_EMAIL` và `PGADMIN_DEFAULT_PASSWORD`; chọn server **Restaurant PostgreSQL**. Khi kết nối lần đầu, nhập `DB_PASSWORD`. Role ứng dụng `restaurant_app` không phải superuser; exporter dùng role riêng `restaurant_metrics` có quyền `pg_monitor`.
-4. Trong pgAdmin mở Query Tool và kiểm tra dữ liệu:
+1. Mở website, kiểm tra thực đơn, trạng thái bàn, danh sách đơn và số liệu tổng quan được tải từ PostgreSQL qua các API `/api/menu`, `/api/tables`, `/api/orders`, `/api/summary`.
+2. Tìm món hoặc lọc danh mục, chọn **Thêm vào đơn** trên một món. Trong cửa sổ tạo đơn, chọn bàn đang trống, thêm nhiều món, chỉnh số lượng rồi chọn **Xem lại đơn** và **Xác nhận tạo đơn**. Món hết hàng và bàn không khả dụng không thể được thêm vào đơn.
+3. Đơn mới xuất hiện trong **Quản lý đơn hàng**. Cập nhật lần lượt **Chờ xử lý → Đang chuẩn bị → Sẵn sàng → Hoàn thành**; có thể hủy đơn trước khi hoàn thành. Bàn được giải phóng khi đơn hoàn thành hoặc bị hủy; số liệu tổng quan được tải lại từ database.
+4. Mở pgAdmin, đăng nhập bằng `PGADMIN_DEFAULT_EMAIL` và `PGADMIN_DEFAULT_PASSWORD`; chọn server **Restaurant PostgreSQL**. Khi kết nối lần đầu, nhập `DB_PASSWORD`. Role ứng dụng `restaurant_app` không phải superuser; exporter dùng role riêng `restaurant_metrics` có quyền `pg_monitor`.
+5. Trong pgAdmin mở Query Tool và kiểm tra dữ liệu:
 
 ```sql
 SELECT * FROM menu_items ORDER BY id;

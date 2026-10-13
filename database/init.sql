@@ -39,11 +39,17 @@ CREATE TABLE IF NOT EXISTS restaurant_tables (
 CREATE TABLE IF NOT EXISTS orders (
     id SERIAL PRIMARY KEY,
     table_id INTEGER REFERENCES restaurant_tables(id),
-    status VARCHAR(30) NOT NULL DEFAULT 'Mới'
-        CHECK (status IN ('Mới', 'Đang xử lý', 'Hoàn thành', 'Đã hủy')),
+    status VARCHAR(30) NOT NULL DEFAULT 'Chờ xử lý'
+        CHECK (status IN (
+            'Chờ xử lý', 'Đang chuẩn bị', 'Sẵn sàng', 'Hoàn thành', 'Đã hủy'
+        )),
     total_amount NUMERIC(12, 2) NOT NULL DEFAULT 0,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    request_key VARCHAR(64)
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS orders_request_key_unique
+    ON orders (request_key) WHERE request_key IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS order_items (
     id SERIAL PRIMARY KEY,

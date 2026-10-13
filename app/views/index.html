@@ -73,39 +73,46 @@
         <section class="overview-section" aria-labelledby="overview-title">
             <div class="section-heading overview-heading">
                 <div>
-                    <p class="eyebrow">TỔNG QUAN NHÀ HÀNG</p>
                     <h2 id="overview-title">Mọi thứ trong tầm mắt</h2>
                 </div>
-                <p class="today-label"><span aria-hidden="true">◷</span> Dữ liệu cập nhật trực tiếp</p>
             </div>
 
             <div class="statistics">
                 <article class="stat-card">
                     <div class="stat-topline">
-                        <span class="stat-icon icon-menu" aria-hidden="true">✳</span>
-                        <span class="stat-caption">ĐANG PHỤC VỤ</span>
+                        <span class="stat-icon icon-order" aria-hidden="true">↗</span>
+                        <span class="stat-caption">HÔM NAY</span>
                     </div>
-                    <p class="stat-value" id="menu-count">—</p>
-                    <p class="stat-label">Món ăn trong thực đơn</p>
+                    <p class="stat-value" id="today-orders">—</p>
+                    <p class="stat-label">Đơn hàng hôm nay</p>
                     <span class="stat-accent accent-menu" aria-hidden="true"></span>
                 </article>
                 <article class="stat-card">
                     <div class="stat-topline">
-                        <span class="stat-icon icon-order" aria-hidden="true">↗</span>
-                        <span class="stat-caption">ĐÃ GHI NHẬN</span>
+                        <span class="stat-icon icon-menu" aria-hidden="true">₫</span>
+                        <span class="stat-caption">DOANH THU</span>
                     </div>
-                    <p class="stat-value" id="order-count">—</p>
-                    <p class="stat-label">Đơn hàng của nhà hàng</p>
+                    <p class="stat-value stat-currency" id="today-revenue">—</p>
+                    <p class="stat-label">Doanh thu hôm nay</p>
                     <span class="stat-accent accent-order" aria-hidden="true"></span>
                 </article>
                 <article class="stat-card">
                     <div class="stat-topline">
                         <span class="stat-icon icon-table" aria-hidden="true">⌘</span>
-                        <span class="stat-caption">SẴN SÀNG ĐÓN KHÁCH</span>
+                        <span class="stat-caption">SẴN SÀNG</span>
                     </div>
-                    <p class="stat-value" id="table-count">—</p>
-                    <p class="stat-label">Bàn ăn trong nhà hàng</p>
+                    <p class="stat-value" id="free-tables">—</p>
+                    <p class="stat-label">Bàn đang trống</p>
                     <span class="stat-accent accent-table" aria-hidden="true"></span>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-topline">
+                        <span class="stat-icon icon-order" aria-hidden="true">◷</span>
+                        <span class="stat-caption">ĐANG XỬ LÝ</span>
+                    </div>
+                    <p class="stat-value" id="active-orders">—</p>
+                    <p class="stat-label">Đơn chưa hoàn thành</p>
+                    <span class="stat-accent accent-menu" aria-hidden="true"></span>
                 </article>
             </div>
         </section>
@@ -113,19 +120,16 @@
         <section class="content-section" id="menu" aria-labelledby="menu-title">
             <div class="section-heading">
                 <div>
-                    <p class="eyebrow">BẾP ĐANG CÓ GÌ?</p>
                     <h2 id="menu-title">Thực đơn hôm nay</h2>
-                    <p class="section-description">Chọn một món để lên đơn nhanh cho khách.</p>
                 </div>
-                <span class="section-count">MÓN NGON MỖI NGÀY</span>
+                <button id="new-order-button" class="primary-button" type="button">＋ Tạo đơn hàng</button>
             </div>
 
-            <div class="order-controls">
-                <label for="table-select">Phục vụ tại bàn</label>
-                <select id="table-select">
-                    <option value="">Không gắn với bàn</option>
-                </select>
-                <span class="table-hint">Chỉ hiển thị những bàn đang trống</span>
+            <div class="list-controls menu-controls">
+                <label class="sr-only" for="menu-search">Tìm món ăn</label>
+                <input id="menu-search" type="search" placeholder="Tìm theo tên món..." autocomplete="off">
+                <label class="sr-only" for="category-filter">Lọc danh mục</label>
+                <select id="category-filter"><option value="">Tất cả danh mục</option></select>
             </div>
 
             <p id="app-message" class="app-message" role="status" aria-live="polite"></p>
@@ -136,10 +140,21 @@
             <section class="panel-section" id="orders" aria-labelledby="orders-title">
                 <div class="section-heading compact-heading">
                     <div>
-                        <p class="eyebrow">BẾP ĐÃ NHẬN</p>
-                        <h2 id="orders-title">Đơn hàng gần đây</h2>
+                        <h2 id="orders-title">Quản lý đơn hàng</h2>
                     </div>
-                    <span class="small-count">MỚI NHẤT</span>
+                </div>
+                <div class="list-controls order-filters">
+                    <label class="sr-only" for="order-search">Tìm mã đơn</label>
+                    <input id="order-search" type="search" placeholder="Tìm mã đơn, ví dụ 12..." inputmode="numeric">
+                    <label class="sr-only" for="status-filter">Lọc trạng thái</label>
+                    <select id="status-filter">
+                        <option value="">Tất cả trạng thái</option>
+                        <option>Chờ xử lý</option>
+                        <option>Đang chuẩn bị</option>
+                        <option>Sẵn sàng</option>
+                        <option>Hoàn thành</option>
+                        <option>Đã hủy</option>
+                    </select>
                 </div>
                 <div id="order-list" class="order-list"></div>
             </section>
@@ -147,7 +162,6 @@
             <section class="panel-section" id="tables" aria-labelledby="tables-title">
                 <div class="section-heading compact-heading">
                     <div>
-                        <p class="eyebrow">SƠ ĐỒ PHỤC VỤ</p>
                         <h2 id="tables-title">Trạng thái bàn</h2>
                     </div>
                     <span class="table-legend"><span></span> Còn trống</span>
@@ -155,6 +169,40 @@
                 <div id="table-list" class="table-list"></div>
             </section>
         </div>
+
+        <dialog id="order-dialog" class="order-dialog" aria-labelledby="dialog-title">
+            <form id="order-form" method="dialog">
+                <div class="dialog-heading">
+                    <div>
+                        <p class="eyebrow">PHỤC VỤ KHÁCH HÀNG</p>
+                        <h2 id="dialog-title">Tạo đơn hàng</h2>
+                    </div>
+                    <button class="icon-button" type="button" id="close-order-dialog" aria-label="Đóng">×</button>
+                </div>
+                <label class="field-label" for="order-table">Chọn bàn</label>
+                <select id="order-table" name="table_id">
+                    <option value="">Không gắn với bàn</option>
+                </select>
+                <p id="dialog-table-hint" class="field-hint">Chỉ những bàn đang trống mới khả dụng.</p>
+                <div class="cart-heading"><strong>Món trong đơn</strong><span id="cart-count">0 món</span></div>
+                <div id="cart-list" class="cart-list"></div>
+                <p id="cart-empty" class="empty-state">Chưa có món. Thêm món từ thực đơn bên dưới.</p>
+                <div class="dialog-total"><span>Tổng cộng</span><strong id="cart-total">0 ₫</strong></div>
+                <p id="dialog-message" class="dialog-message" role="alert" aria-live="assertive"></p>
+                <div class="dialog-actions">
+                    <button class="secondary-button" id="continue-menu" type="button">＋ Thêm món</button>
+                    <button class="primary-button" id="review-order" type="button" disabled>Xem lại đơn</button>
+                </div>
+                <section id="order-review" class="order-review" hidden>
+                    <h3>Xác nhận đơn hàng</h3>
+                    <p id="review-summary"></p>
+                    <div class="dialog-actions">
+                        <button class="secondary-button" id="edit-order" type="button">Quay lại chỉnh sửa</button>
+                        <button class="primary-button" id="confirm-order" type="button">Xác nhận tạo đơn</button>
+                    </div>
+                </section>
+            </form>
+        </dialog>
 
         <footer class="page-footer">
             <a class="footer-brand" href="#dashboard">
@@ -167,7 +215,6 @@
                 </span>
                 Nhà hàng Order
             </a>
-            <p>Món ngon mỗi ngày, phục vụ bằng sự tận tâm.</p>
             <a class="back-to-top" href="#dashboard">Lên đầu trang ↑</a>
         </footer>
     </main>

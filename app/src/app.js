@@ -44,8 +44,51 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "../views/index.html"));
 });
 
-const server = app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Ung dung dang chay tai cong ${PORT}`);
+async function start() {
+    const client = await pool.connect();
+    try {
+        await client.query("BEGIN");
+        await client.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS request_key VARCHAR(64)");
+        await client.query("ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_status_check");
+        await client.query(`
+            UPDATE orders
+            SET status = CASE status
+                WHEN 'Mới' THEN 'Chờ xử lý'
+                WHEN 'Đang xử lý' THEN 'Đang chuẩn bị'
+                ELSE status
+            END
+            WHERE status IN ('Mới', 'Đang xử lý')
+        `);
+        await client.query(`
+            ALTER TABLE orders
+            ADD CONSTRAINT orders_status_check
+            CHECK (status IN (
+                'Chờ xử lý', 'Đang chuẩn bị', 'Sẵn sàng', 'Hoàn thành', 'Đã hủy'
+            ))
+        `);
+        await client.query(`
+            CREATE UNIQUE INDEX IF NOT EXISTS orders_request_key_unique
+            ON orders (request_key) WHERE request_key IS NOT NULL
+        `);
+        await client.query("COMMIT");
+    } catch (error) {
+        await client.query("ROLLBACK");
+        throw error;
+    } finally {
+        client.release();
+    }
+
+    server = app.listen(PORT, "0.0.0.0", () => {
+        console.log(`Ung dung dang chay tai cong ${PORT}`);
+    });
+    return server;
+}
+
+let server;
+start().catch(async error => {
+    console.error("Không thể khởi động ứng dụng:", error.message);
+    await pool.end();
+    process.exitCode = 1;
 });
 
 async function shutdown() {

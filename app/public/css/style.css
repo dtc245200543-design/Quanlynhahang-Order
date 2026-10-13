@@ -1306,3 +1306,461 @@ a {
         transition-duration: .01ms !important;
     }
 }
+
+.statistics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.stat-currency {
+    font-size: clamp(21px, 2.3vw, 30px);
+}
+
+.primary-button,
+.secondary-button {
+    display: inline-flex;
+    min-height: 39px;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 14px;
+    border: 1px solid var(--orange);
+    border-radius: 9px;
+    background: var(--orange);
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.primary-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: #c95025;
+    box-shadow: 0 7px 16px rgb(201 80 37 / 20%);
+}
+
+.secondary-button {
+    border-color: var(--line);
+    background: #fff;
+    color: var(--ink);
+}
+
+.secondary-button:hover:not(:disabled) {
+    background: #fff5ea;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: .58;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible {
+    outline: 3px solid rgb(231 111 54 / 38%);
+    outline-offset: 2px;
+}
+
+.list-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 17px;
+}
+
+.list-controls input,
+.list-controls select,
+.order-dialog select {
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: #fff;
+    color: var(--ink);
+    font-size: 12px;
+}
+
+.list-controls input {
+    width: min(320px, 100%);
+}
+
+.list-controls select {
+    min-width: 170px;
+}
+
+.menu-category {
+    align-self: flex-start;
+    margin-bottom: 5px;
+    color: #8a6d57;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.availability {
+    align-self: flex-start;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.availability.available {
+    background: #eaf5ec;
+    color: #34734b;
+}
+
+.availability.unavailable {
+    background: #fff0ee;
+    color: #b84439;
+}
+
+.menu-item .menu-price {
+    font-size: 13px;
+}
+
+.menu-item.sold-out {
+    opacity: .74;
+}
+
+.menu-item button {
+    width: 100%;
+    min-height: 38px;
+    align-self: stretch;
+    margin-top: 12px;
+    font-size: 11px;
+}
+
+.menu-item button:disabled {
+    border-color: #d9d1c9;
+    background: #eee9e3;
+    color: #72685f;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 24px 16px;
+    border: 1px dashed #ddcdbc;
+    border-radius: 10px;
+    background: rgb(255 255 255 / 72%);
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+.order-item {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    padding: 14px;
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.order-item:hover {
+    border-color: #e6c8ad;
+    box-shadow: 0 8px 20px rgb(61 36 27 / 7%);
+}
+
+.order-item > strong {
+    font-size: 13px;
+}
+
+.order-meta,
+.order-item .order-meta {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.order-detail-items {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 9px 0 9px 17px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.order-total {
+    color: var(--orange);
+    font-size: 13px;
+}
+
+.order-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.compact-button {
+    min-height: 32px;
+    padding: 0 10px;
+    font-size: 10px;
+}
+
+.text-button {
+    min-height: 32px;
+    padding: 0 8px;
+    border: 0;
+    background: transparent;
+    color: var(--warning);
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.text-button:hover {
+    text-decoration: underline;
+}
+
+.order-dialog {
+    width: min(560px, calc(100% - 28px));
+    max-width: none;
+    max-height: min(90vh, 800px);
+    padding: 0;
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--cream);
+    color: var(--ink);
+    box-shadow: 0 24px 80px rgb(35 23 15 / 28%);
+}
+
+.order-dialog::backdrop {
+    background: rgb(35 23 15 / 55%);
+    backdrop-filter: blur(3px);
+}
+
+.order-dialog form {
+    padding: 24px;
+}
+
+.dialog-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.dialog-heading h2 {
+    margin: 0;
+    font-size: 23px;
+}
+
+.icon-button {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 23px;
+    line-height: 1;
+}
+
+.field-label,
+.cart-heading {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 8px;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.order-dialog select {
+    width: 100%;
+}
+
+.field-hint {
+    margin: 6px 0 19px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.cart-heading {
+    margin-bottom: 10px;
+}
+
+.cart-heading span {
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.cart-list {
+    display: grid;
+    gap: 8px;
+}
+
+.cart-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 12px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+}
+
+.cart-row > strong {
+    font-size: 12px;
+}
+
+.cart-row > span {
+    color: var(--orange);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.quantity-control {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.quantity-control button:not(.remove-item) {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: #fff8f0;
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.quantity-control span {
+    min-width: 18px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.remove-item {
+    margin-left: auto;
+    border: 0;
+    background: transparent;
+    color: var(--warning);
+    cursor: pointer;
+    font-size: 10px;
+}
+
+.cart-empty {
+    padding: 15px;
+}
+
+.dialog-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 17px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+}
+
+.dialog-total strong {
+    color: var(--orange);
+    font-size: 17px;
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 9px;
+    margin-top: 16px;
+}
+
+.dialog-message {
+    margin: 12px 0 0;
+    color: var(--green);
+    font-size: 12px;
+}
+
+.dialog-message.error {
+    color: var(--warning);
+}
+
+.order-review {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+}
+
+.order-review h3 {
+    margin: 0 0 7px;
+    font-size: 14px;
+}
+
+.order-review p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.order-review[hidden],
+.empty-state[hidden],
+.primary-button[hidden] {
+    display: none;
+}
+
+@media (max-width: 850px) {
+    .statistics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 620px) {
+    .statistics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stat-card {
+        min-height: 120px;
+    }
+
+    .stat-currency {
+        font-size: clamp(18px, 5vw, 24px);
+    }
+
+    .content-section > .section-heading {
+        align-items: flex-start;
+    }
+
+    .content-section > .section-heading > .primary-button {
+        min-height: 35px;
+        padding: 0 9px;
+        font-size: 10px;
+        white-space: nowrap;
+    }
+
+    .list-controls {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .list-controls input,
+    .list-controls select {
+        width: 100%;
+    }
+
+    .order-dialog form {
+        padding: 19px;
+    }
+
+    .dialog-actions {
+        flex-direction: column-reverse;
+    }
+
+    .dialog-actions > button {
+        width: 100%;
+    }
+}
