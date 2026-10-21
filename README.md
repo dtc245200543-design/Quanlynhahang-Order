@@ -1,56 +1,37 @@
-# Đề 12 — Hệ thống Quản lý Nhà hàng / Order
+# Đề tài 12 — Hệ thống Quản lý Nhà hàng / Order
 
-Ứng dụng Node.js/Express quản lý món ăn, bàn và đơn hàng, triển khai hoàn toàn bằng Docker Compose. PostgreSQL lưu dữ liệu; Nginx là reverse proxy; Prometheus/Grafana theo dõi metrics; Loki/Promtail tập trung log; pgAdmin quản trị cơ sở dữ liệu.
+Ứng dụng quản lý thực đơn, bàn và đơn hàng. Dự án triển khai bằng Docker Compose, dùng PostgreSQL để lưu dữ liệu, Nginx làm reverse proxy, Prometheus/Grafana giám sát và Loki/Promtail tập trung nhật ký.
 
-## Kiến trúc
+## Thành phần
 
-```mermaid
-flowchart LR
-    Browser -->|HTTP :8080| Nginx
-    Nginx -->|frontend network| App[Node.js / Express]
-    App -->|backend network| DB[(PostgreSQL)]
-    PgAdmin -->|backend network| DB
-    Prometheus -->|/metrics| App
-    Prometheus --> NginxExporter
-    NginxExporter --> Nginx
-    Prometheus --> PostgresExporter
-    PostgresExporter --> DB
-    Prometheus --> cAdvisor
-    Grafana --> Prometheus
-    Grafana --> Loki
-    Promtail -->|Docker logs| Loki
-```
+| Thành phần | Vai trò | Địa chỉ mặc định |
+|---|---|---|
+| Website qua Nginx | Giao diện và API gọi món | <http://localhost:8080> |
+| pgAdmin | Quản trị PostgreSQL | <http://localhost:5050> |
+| Prometheus | Thu thập metrics | <http://localhost:9090> |
+| Grafana | Dashboard và truy vấn log | <http://localhost:3001> |
+| PostgreSQL, Loki | Database và lưu log | Chỉ truy cập nội bộ Docker |
 
-Các network được tách theo mục đích. `backend` và `monitoring` là network nội bộ; `management` kết nối pgAdmin, Prometheus và Grafana để các cổng quản trị/quan sát được publish đúng cách, nhưng chỉ bind vào `127.0.0.1`. Website được công bố riêng qua Nginx. PostgreSQL không publish cổng ra host.
+Các cổng quản trị chỉ bind vào máy local. PostgreSQL không mở cổng trực tiếp ra host.
 
 ## Yêu cầu
 
-- Docker Desktop/Engine có Docker Compose v2 (`docker compose`).
-- Git.
-- Với máy Windows: Docker Desktop chạy Linux containers; thư mục dự án đặt trên ổ đĩa được Docker Desktop chia sẻ.
+- Docker Desktop hoặc Docker Engine có Docker Compose v2.
+- Git để lấy mã nguồn.
+- Trên Windows, khởi động Docker Desktop ở chế độ Linux containers.
 
-## Cấu hình mật khẩu
+## Cấu hình và chạy
 
-Không dùng mật khẩu trong `.env.example` ở môi trường thật. Tạo `.env` riêng và thay mỗi biến `REPLACE_WITH...` bằng một secret **riêng biệt**, ngẫu nhiên, tối thiểu 24 ký tự. Ví dụ tạo chuỗi bằng PowerShell:
-
-```powershell
-$bytes = New-Object byte[] 32
-[Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
-[BitConverter]::ToString($bytes).Replace('-', '').ToLowerInvariant()
-```
-
-Chạy ba dòng trên trong PowerShell để tạo chuỗi mật khẩu ngẫu nhiên mật mã học; lặp lại cho PostgreSQL admin, ứng dụng, exporter, pgAdmin và Grafana. Không commit `.env`; `.gitignore` đã loại trừ file này.
+Tại thư mục gốc, tạo `.env` từ mẫu:
 
 ```powershell
 Copy-Item .env.example .env
 notepad .env
 ```
 
-Trên Linux/macOS có thể dùng `cp .env.example .env` và `openssl rand -hex 32` để tạo từng secret.
+Thay tất cả giá trị `REPLACE_WITH_...` bằng mật khẩu riêng, mạnh và không dùng lại. Không chia sẻ hoặc commit `.env`; file này đã được loại trừ trong `.gitignore`.
 
-## Khởi chạy
-
-Từ thư mục gốc dự án:
+Khởi động và kiểm tra các dịch vụ:
 
 ```powershell
 docker compose config
@@ -58,85 +39,32 @@ docker compose up -d --build
 docker compose ps
 ```
 
-Compose sẽ đợi PostgreSQL healthy trước khi khởi động ứng dụng và pgAdmin. Dữ liệu được lưu trong named volumes, không mất khi chỉ chạy `docker compose down`.
+Mở website tại <http://localhost:8080>. Thông tin đăng nhập pgAdmin và Grafana được cấu hình trong `.env`. PostgreSQL lưu dữ liệu trong Docker named volumes.
 
-| Thành phần | Địa chỉ mặc định | Ghi chú |
-|---|---|---|
-| Website | <http://localhost:8080> | Đi qua Nginx; không truy cập trực tiếp app |
-| pgAdmin | <http://localhost:5050> | Email/mật khẩu lấy từ `.env`; server DB được khai báo trước |
-| Grafana | <http://localhost:3001> | Tài khoản/mật khẩu lấy từ `.env`; dashboard đã provision |
-| Prometheus | <http://localhost:9090> | Trang `Status → Targets` để kiểm tra scrape |
-| PostgreSQL | Không publish host port | Chỉ truy cập nội bộ qua `db:5432` |
-| Loki | Không publish host port | Được Grafana và Promtail truy cập nội bộ |
+## Demo chức năng
 
-Các port trên chỉ bind vào loopback để tránh công khai giao diện quản trị. Nếu cần demo qua LAN, chỉ sửa địa chỉ bind sau khi đã giới hạn firewall và đặt xác thực/TLS phù hợp; không publish trực tiếp PostgreSQL hoặc Loki.
+1. Xem thực đơn, bàn, đơn hàng và số liệu tổng quan trên website.
+2. Thêm món vào đơn, chọn bàn trống, chỉnh số lượng và xác nhận tạo đơn.
+3. Cập nhật trạng thái đơn: **Chờ xử lý → Đang chuẩn bị → Sẵn sàng → Hoàn thành**. Có thể hủy đơn trước khi hoàn thành.
+4. Mở pgAdmin, đăng nhập bằng thông tin trong `.env`, chọn server **Restaurant PostgreSQL**. Lần đầu kết nối, nhập mật khẩu `DB_PASSWORD`.
 
-## Demo ứng dụng và database
+Một số API chính: `/api/menu`, `/api/tables`, `/api/orders`, `/api/summary`.
 
-1. Mở website, kiểm tra thực đơn, trạng thái bàn, danh sách đơn và số liệu tổng quan được tải từ PostgreSQL qua các API `/api/menu`, `/api/tables`, `/api/orders`, `/api/summary`.
-2. Tìm món hoặc lọc danh mục, chọn **Thêm vào đơn** trên một món. Trong cửa sổ tạo đơn, chọn bàn đang trống, thêm nhiều món, chỉnh số lượng rồi chọn **Xem lại đơn** và **Xác nhận tạo đơn**. Món hết hàng và bàn không khả dụng không thể được thêm vào đơn.
-3. Đơn mới xuất hiện trong **Quản lý đơn hàng**. Cập nhật lần lượt **Chờ xử lý → Đang chuẩn bị → Sẵn sàng → Hoàn thành**; có thể hủy đơn trước khi hoàn thành. Bàn được giải phóng khi đơn hoàn thành hoặc bị hủy; số liệu tổng quan được tải lại từ database.
-4. Mở pgAdmin, đăng nhập bằng `PGADMIN_DEFAULT_EMAIL` và `PGADMIN_DEFAULT_PASSWORD`; chọn server **Restaurant PostgreSQL**. Khi kết nối lần đầu, nhập `DB_PASSWORD`. Role ứng dụng `restaurant_app` không phải superuser; exporter dùng role riêng `restaurant_metrics` có quyền `pg_monitor`.
-5. Trong pgAdmin mở Query Tool và kiểm tra dữ liệu:
+## Giám sát và nhật ký
 
-```sql
-SELECT * FROM menu_items ORDER BY id;
-SELECT * FROM restaurant_tables ORDER BY table_number;
-SELECT id, table_id, status, total_amount, created_at
-FROM orders ORDER BY created_at DESC;
-```
-
-## Monitoring: Prometheus + Grafana
-
-Prometheus scrape theo chu kỳ 15 giây:
-
-- `restaurant-app`: runtime Node.js từ `/metrics`.
-- `nginx`: connections/requests qua `nginx-prometheus-exporter`.
-- `postgres`: database/connection/transaction metrics qua `postgres-exporter`.
-- `containers`: CPU và bộ nhớ container qua cAdvisor.
-
-Nginx phục vụ website trên cổng 8080; endpoint `stub_status` chỉ lắng nghe cổng nội bộ 8081 để exporter đọc, không được publish ra host.
-
-Mở Prometheus → **Status → Targets**; các target chính phải báo `UP`. Grafana → **Dashboards → Restaurant → Restaurant - System Overview** có biểu đồ container CPU/bộ nhớ, Nginx connections, PostgreSQL connections/transactions và access log. Datasource Prometheus/Loki cùng dashboard được tự động provision.
-
-## Logging: Loki + Promtail + LogQL
-
-Promtail phát hiện container Docker và đọc stdout/stderr từ Docker JSON log driver; giới hạn lưu log của từng container là 10 MB × 3 file. Grafana → **Explore** → datasource **Loki**, chạy một số truy vấn:
+- Prometheus thu thập metrics ứng dụng, Nginx, PostgreSQL và container. Trong **Status → Targets**, các target cần ở trạng thái `UP`.
+- Grafana có dashboard **Restaurant - System Overview** và datasource Prometheus/Loki được cấu hình sẵn.
+- Xem log tại Grafana → **Explore** → datasource **Loki**. Ví dụ truy vấn:
 
 ```logql
 {service="nginx"}
 ```
 
 ```logql
-{service="nginx"} | json | status >= 400
-```
-
-```logql
 {service="app"} |= "Lỗi"
 ```
 
-```logql
-{container=~".*restaurant.*"} |~ "(?i)error|exception|fatal"
-```
-
-Các trường `service`/`container` được Promtail lấy từ metadata Docker/Compose. Nếu vừa khởi động, đợi vài giây để Promtail phát hiện container và sinh log; truy vấn chỉ trả dữ liệu trong khoảng thời gian đã chọn ở Grafana.
-
-## Hardening được áp dụng
-
-- Node.js chạy bằng user `appuser`; runtime app dùng filesystem chỉ đọc, bỏ toàn bộ Linux capabilities, bật `no-new-privileges`.
-- PostgreSQL dùng role quản trị riêng để bootstrap; app và exporter có role tối thiểu riêng. Không publish cổng DB.
-- Network phân vùng `frontend`, `backend`, `monitoring` và `management`; DB không có cổng host.
-- Nginx chạy bằng image unprivileged trên cổng 8080, root filesystem chỉ đọc, giới hạn tốc độ API và thêm CSP, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`.
-- Giao diện quản trị chỉ bind loopback mặc định; secret lấy từ `.env` không commit.
-- Docker JSON logs có giới hạn xoay vòng.
-
-**Lưu ý quyền telemetry:** cAdvisor cần quyền đọc thông tin host/container; cấu hình hiện dùng `privileged` để có số liệu container ổn định trên Linux. Promtail chạy UID 0 trong container và có mount Docker socket chỉ đọc để khám phá log. Socket Docker vẫn là bề mặt quyền nhạy cảm dù mount `:ro`; chỉ chạy stack này trên host tin cậy. Với production, thay collector bằng agent theo chính sách nền tảng và giới hạn quyền host.
-
-pgAdmin chạy bằng user không-root `pgadmin`; không bật `no-new-privileges` cho service này vì entrypoint chính thức cần `sudo` trong bước khởi tạo. Giữ giao diện chỉ bind loopback và dùng mật khẩu mạnh.
-
-Nginx hiện dùng HTTP nhưng có security headers theo yêu cầu. Nếu triển khai Internet, đặt TLS tại load balancer/reverse proxy tin cậy hoặc bổ sung chứng chỉ HTTPS và chỉ mở cổng TLS; không coi security headers là thay thế cho TLS.
-
-## Vận hành và xử lý sự cố
+## Lệnh vận hành
 
 ```powershell
 docker compose logs -f app
@@ -146,58 +74,41 @@ docker compose restart app
 docker compose down
 ```
 
-PostgreSQL chỉ tự chạy `database/init.sql` khi khởi tạo volume rỗng. Nếu đang giữ một volume cũ thiếu bảng/role, sau khi cấu hình `DB_USER` khác `POSTGRES_ADMIN_USER`, áp dụng script khởi tạo an toàn trên database hiện tại:
+`docker compose down` giữ lại dữ liệu. **Không chạy `docker compose down -v` nếu cần giữ database hoặc dữ liệu giám sát**, vì lệnh này xóa các volumes.
 
-```powershell
-docker compose exec -T db psql -U <POSTGRES_ADMIN_USER> -d <POSTGRES_DB> -v ON_ERROR_STOP=1 -f /docker-entrypoint-initdb.d/01-init.sql
-docker compose up -d --build app postgres-exporter pgadmin
-```
+## Bảo mật
 
-Thay `<POSTGRES_ADMIN_USER>` và `<POSTGRES_DB>` bằng giá trị trong `.env`. Script tạo/cập nhật role riêng và chỉ thêm dữ liệu mẫu còn thiếu; không xóa bảng hoặc order. Nếu đổi mật khẩu role sau khi volume đã khởi tạo, hãy áp dụng lại script bằng tài khoản quản trị để cập nhật role. Chỉ để tạo mới hoàn toàn dữ liệu demo mới chạy:
+- Mật khẩu được lấy từ `.env`; `.env.example` chỉ chứa giá trị mẫu.
+- PostgreSQL không publish cổng ra host; các giao diện quản trị mặc định chỉ mở trên loopback.
+- Ứng dụng chạy bằng user không phải root; Nginx cấu hình security headers và giới hạn tốc độ API.
+- Promtail cần quyền đọc Docker socket và cAdvisor cần quyền truy cập thông tin container. Chỉ chạy stack trên máy tin cậy; không đưa các giao diện quản trị ra Internet nếu chưa cấu hình TLS, firewall và xác thực phù hợp.
 
-```powershell
-docker compose down -v
-docker compose up -d --build
-```
+## Lịch sử commit trên `main`
 
-Lệnh `down -v` xóa vĩnh viễn dữ liệu PostgreSQL, pgAdmin, Prometheus, Loki và Grafana; sao lưu trước nếu cần giữ dữ liệu. `docker compose down` không xóa dữ liệu.
+Tên bên dưới khớp với các commit đã đẩy lên `origin/main`:
 
-## Repository và commit theo rubric
+| Commit | Thông điệp |
+|---|---|
+| `c8dea31` | `feat: triển khai ứng dụng quản lý nhà hàng với PostgreSQL và Nginx` |
+| `55b0ace` | `feat: bổ sung Prometheus và Grafana để giám sát hệ thống` |
+| `b6dae4b` | `feat: tích hợp Loki và Promtail để tập trung nhật ký hệ thống` |
+| `460c221` | `docs: bổ sung hướng dẫn triển khai và báo cáo thực hành` |
+| `aa7ca8b` | `feat: làm mới giao diện ứng dụng nhà hàng` |
+| `c92b82c` | `style: chuẩn hóa bảng màu giao diện nhà hàng` |
+| `af994ab` | `feat: hoàn thiện luồng gọi món và quản lý đơn hàng` |
 
-Tạo GitHub repository riêng theo mã số sinh viên, không đưa `.env`/secret lên GitHub. Nếu thư mục chưa có Git:
+## Báo cáo và cấu trúc
 
-```powershell
-git init
-git add app database nginx pgadmin docker-compose.yml .env.example .gitignore
-git commit -m "feat: deploy restaurant app with PostgreSQL and Nginx"
-git add prometheus grafana
-git commit -m "feat: add Prometheus and Grafana monitoring"
-git add loki promtail
-git commit -m "feat: centralize container logs with Loki and Promtail"
-git add README.md report
-git commit -m "docs: document deployment, security and demo"
-git branch -M main
-git remote add origin https://github.com/<ma-so-sinh-vien>/<repository>.git
-git push -u origin main
-```
-
-Rubric yêu cầu ba commit chức năng đầu tiên; commit tài liệu/hardening là commit bổ sung có nội dung rõ ràng. Không dùng lệnh `git add .` trước khi kiểm tra `.env` chưa được stage.
-
-## Báo cáo và minh chứng
-
-Khung báo cáo ít nhất 10 trang, có trang bìa/placeholder thông tin sinh viên, sơ đồ kiến trúc, mô tả triển khai, kiểm thử và vị trí chèn ảnh chụp màn hình: [report/BAO-CAO.md](report/BAO-CAO.md). Thay các placeholder bằng thông tin thật và ảnh chụp khi stack chạy. Không sử dụng ảnh minh chứng giả.
-
-## Cấu trúc chính
+Khung báo cáo môn học nằm tại [report/BAO-CAO.md](report/BAO-CAO.md). Bổ sung thông tin cá nhân và ảnh chụp minh chứng thật sau khi chạy hệ thống.
 
 ```text
-app/                 Express app, API, UI, non-root Dockerfile
-database/init.sql    Schema, dữ liệu mẫu, role DB giới hạn quyền
-nginx/               Reverse proxy, security headers, rate limiting
-pgadmin/             Cấu hình sẵn server PostgreSQL
-prometheus/           Scrape targets
-grafana/               Datasources và dashboard provision
-loki/                  Cấu hình lưu log tập trung
-promtail/              Thu thập Docker logs
-docker-compose.yml     Toàn bộ stack và network/volume/healthcheck
-report/BAO-CAO.md      Khung báo cáo môn học
+app/                 Ứng dụng Express, API, giao diện và Dockerfile
+database/            Khởi tạo schema, dữ liệu và role PostgreSQL
+nginx/               Reverse proxy và cấu hình bảo mật
+pgadmin/             Cấu hình server PostgreSQL
+prometheus/          Cấu hình thu thập metrics
+grafana/             Datasource và dashboard
+loki/ promtail/      Lưu trữ và thu thập log
+docker-compose.yml   Khai báo dịch vụ, network và volumes
+report/              Khung báo cáo thực hành
 ```
