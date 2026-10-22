@@ -16,7 +16,9 @@ const menuImages = {
     "pho bo": "/images/pho-bo.jpg",
     "bun cha": "/images/bun-cha.jpg",
     "com ga": "/images/com-ga.jpg",
-    "nuoc cam": "/images/nuoc-cam.jpg"
+    "nuoc cam": "/images/nuoc-cam.jpg",
+    "com suon nuong": "/images/com-suon-nuong.jpg",
+    "duong chi cam lo": "/images/duong-chi-cam-lo.jpg"
 };
 const state = {
     menu: [],

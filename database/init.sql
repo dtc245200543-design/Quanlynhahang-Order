@@ -65,7 +65,9 @@ FROM (VALUES
     ('Phở bò', 45000, 'Món chính'),
     ('Cơm gà', 50000, 'Món chính'),
     ('Bún chả', 40000, 'Món chính'),
-    ('Nước cam', 25000, 'Đồ uống')
+    ('Nước cam', 25000, 'Đồ uống'),
+    ('Cơm sườn nướng', 55000, 'Món chính'),
+    ('Dương chi cam lộ', 35000, 'Tráng miệng')
 ) AS seed(name, price, category)
 WHERE NOT EXISTS (
     SELECT 1 FROM menu_items existing WHERE existing.name = seed.name
